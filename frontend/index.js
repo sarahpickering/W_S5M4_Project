@@ -18,15 +18,11 @@ async function moduleProject4() {
   // 👉 Tasks 1 - 5 go here
 
   document.querySelector("#weatherWidget").style.display = "none";
-  document
-    .querySelector("#citySelect")
-    .addEventListener("change", async (evt) => {
-      console.log("selection changed");
+  document.querySelector("#citySelect").addEventListener("change", async (evt) => {
+      console.log("selection changed")
       try {
-        document
-          .querySelector("#citySelect")
-          .setAttribute("disabled", "disabled");
-        document.querySelector("#weatherWidget").style.display = "none";
+        document.querySelector("#citySelect").setAttribute('disabled', 'disabled');
+        document.querySelector("#weatherWidget").style.display = 'none';
         document.querySelector(".info").textContent =
           "Fetching weather data...";
 
@@ -41,9 +37,8 @@ async function moduleProject4() {
 
         let { data } = res;
 
-        document.querySelector(
-          "#apparentTemp div:nth-child(2)"
-        ).textContent = `${data.current.apparent_temperature}°`;
+        document.querySelector("#apparentTemp div:nth-child(2)")
+          .textContent = `${data.current.apparent_temperature}°`;
         document.querySelector("#todayDescription").textContent =
           descriptions.find(d => d[0] === data.current.weather_description)[1];
         document.querySelector('#todayStats div:nth-child(1)')
@@ -52,11 +47,31 @@ async function moduleProject4() {
           .textContent = `Precipitation: ${data.current.precipitation_probability * 100}%`
         document.querySelector('#todayStats div:nth-child(3)')
           .textContent = `Humidity: ${data.current.humidity}%`
+        document.querySelector('#todayStats div:nth-child(4)')
+          .textContent = `Wind: ${data.current.wind_speed}m/s`
 
+          data.forecast.daily.forEach((day, idx) => {
+            let card = document.querySelectorAll('.next-day')[idx]
+
+            let weekDay = card.children[0]
+            let apparent = card.children[1]
+            let minMax = card.children[2]
+            let precipit = card.children[3]
+
+            weekDay.textContent = getWeekDay(day.date)
+            apparent.textContent = descriptions.find(d => d[0] === day.weather_description)[1]
+            minMax.textContent = `${day.temperature_min}°/${day.temperature_max}°`
+            precipit.textContent = `Precipitation: ${day.precipitation_probability * 100}%`
+          })
+
+          document.querySelector('#location').firstElementChild.textContent = data.location.city
       } catch (err) {
         console.log("😞 Promise rejected with an err.message -->", err.message);
       }
-    }); 
+    })
+    function getWeekDay(date) {
+      return date
+    }
 
   // 👆 WORK WORK ABOVE THIS LINE 👆
 
